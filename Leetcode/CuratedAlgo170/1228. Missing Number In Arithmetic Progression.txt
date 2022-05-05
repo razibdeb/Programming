@@ -1,0 +1,91 @@
+/*
+
+In some array arr, the values were in arithmetic progression: the values arr[i + 1] - arr[i] are all equal for every 0 <= i < arr.length - 1.
+
+A value from arr was removed that was not the first or last value in the array.
+
+Given arr, return the removed value.
+
+ 
+
+Example 1:
+
+Input: arr = [5,7,11,13]
+Output: 9
+Explanation: The previous array was [5,7,9,11,13].
+Example 2:
+
+Input: arr = [15,13,12]
+Output: 14
+Explanation: The previous array was [15,14,13,12].
+ 
+
+Constraints:
+
+3 <= arr.length <= 1000
+0 <= arr[i] <= 105
+The given array is guaranteed to be a valid array.
+
+*/
+class Solution {
+public:
+    /*
+    Runtime: 0 ms, faster than 100.00% of C++ online submissions for Missing Number In Arithmetic Progression.
+Memory Usage: 8.2 MB, less than 38.19% of C++ online submissions for Missing Number In Arithmetic Progression.
+
+binary search
+
+    */
+    int missingNumber(vector<int> & arr) {
+        int n = arr.size();
+        int first = arr[0];
+        int last = arr.back();
+        
+        int diff = (last - first) / n;
+        
+        /*
+        here there is one item less, n = sizes
+        
+        1 2 3 4 5 = diff = (5 - 1)/ 4 4 = number of item - 1
+        */
+        
+        int low = 0;
+        int high = n - 1;
+        
+        while(low < high) {
+            int mid = low + (high - low) / 2;
+            int item = first + mid  * diff;
+            if (arr[mid] == item) {
+                low = mid + 1; //look on right side
+            } else {
+                high = mid;
+            }
+        }
+        
+        return first + high * diff; 
+    }
+    
+    /*
+        Runtime: 4 ms, faster than 76.55% of C++ online submissions for Missing Number In Arithmetic Progression.
+Memory Usage: 8.1 MB, less than 82.07% of C++ online submissions for Missing Number In Arithmetic Progression.
+O(N)
+
+we can do better liner search
+    */
+    int missingNumber1(vector<int>& arr) {
+        int diff = arr[0] - arr[1];
+        
+        for(int i = 1; i < arr.size() + 1; i++) {
+            int temp = arr[i] - arr[i+1];
+            if(temp == diff) continue;
+            else {
+                if(abs(temp) > abs(diff)) {
+                    return arr[i] - diff;
+                } else {
+                    return arr[0] - temp;
+                }
+            }
+        }
+        return 0;
+    }
+};
