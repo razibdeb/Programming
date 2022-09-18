@@ -1,0 +1,117 @@
+/*
+1291. Sequential Digits Medium
+
+An integer has sequential digits if and only if each digit in the number is one more than the previous digit.
+
+Return a sorted list of all the integers in the range [low, high] inclusive that have sequential digits.
+
+ 
+
+Example 1:
+
+Input: low = 100, high = 300
+Output: [123,234]
+Example 2:
+
+Input: low = 1000, high = 13000
+Output: [1234,2345,3456,4567,5678,6789,12345]
+ 
+
+Constraints:
+
+10 <= low <= high <= 10^9
+*/
+class Solution {
+public:
+    
+    int getDigitCount(int low) {
+        if(low == 0) return 1;
+        int result = 0;
+        while(low > 0) {
+            low = low / 10;
+            result++;
+        }
+        return result;
+    }
+    
+    int getFirstDigit(int input) {
+        while(input > 9) input = input/10;
+        return input;
+    }
+    /*
+    Runtime: 0 ms, faster than 100.00% of C++ online submissions for Sequential Digits.
+Memory Usage: 5.9 MB, less than 99.32% of C++ online submissions for Sequential Digits.
+    */
+    vector<int> sequentialDigits1(int low, int high) {
+        
+        int startDigit = getFirstDigit(low);
+        int startDigitCount = getDigitCount(low);
+        
+        int endDigitCount = getDigitCount(high);
+        
+        vector<int> result;
+        
+        while(startDigitCount <= endDigitCount) {
+            int temp = -1;
+            for(int i = startDigit; i <= 9; i++) {
+                
+                temp = generate(i, startDigitCount); //have to check if it is smaller then start
+                if(temp < low) continue;
+                
+                //cout<<"For startDigit "<<i<<" Digit Count "<<startDigitCount<<" O: "<<temp<<endl;
+                if(temp == -1 || temp > high) {
+                    break;
+                } else {
+                    result.push_back(temp);
+                }
+            }
+            if(temp > high) break;
+            
+            startDigit = 1;
+            startDigitCount++;
+        }
+        return result;
+    }
+    
+    int generate(int firstDigit, int n) {
+        int result = firstDigit;
+        int lastDigit = firstDigit;
+        while(n > 1) {
+            n--;
+            if(lastDigit > 8) return -1; //if it is 9 then next add will be 10 which is not valid
+            result = result * 10 + lastDigit + 1;
+            lastDigit++;
+            
+        }
+        return result;
+    }
+    /*
+    Runtime: 0 ms, faster than 100.00% of C++ online submissions for Sequential Digits.
+Memory Usage: 6.3 MB, less than 38.39% of C++ online submissions for Sequential Digits.
+    */
+    
+    vector<int> sequentialDigits(int low, int high) {
+        //take a string "123456789"
+        //length from low -> length to high-> length
+        //start from begining untill length of low -> make a number from string and add to result if bigger then low and smaller then high
+        //increase index
+        
+        string sampleString = "123456789";
+        int lowLen = to_string(low).size();
+        int highLen = to_string(high).size();
+        vector<int> result;
+        for(int length = lowLen; length <= highLen; length++) {
+            //start have to less then sample string size
+            //for each start index we will get string of length L
+            for(int start = 0; start + length < 10; start++ ) {
+                string thisDigit = sampleString.substr(start, length);
+                //cout<<thisDigit<<endl;
+                int number = stoi(thisDigit);
+                if(number >= low && number <= high) {
+                    result.push_back(number);
+                }
+            }
+        }
+        return result;
+    }
+};
